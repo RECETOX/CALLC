@@ -109,7 +109,7 @@ def sel_features(infile,verbose=True,remove_std=True,remove_cor=True,std_val=0.0
 
 		rem_f = list(set(rem_f))
 		[rem_f.remove(x) for x in rem_f if x in ignore_cols]
-		if verbose: print "Removing the following features: %s" % rem_f
+		if verbose: print("Removing the following features: %s" % rem_f)
 		
 		infile.drop(rem_f, axis=1, inplace=True)
 	return(infile,infile.columns)
@@ -226,24 +226,24 @@ def main(infilen="train/retmetfeatures_new.csv"):
 			if len(select_index[n:]) < 10: continue
 
 			cv = KFold(n_splits=10,shuffle=True)
-            cv = cv.split(train.index)
-            #len(train.index)
+			cv = cv.split(train.index)
+	 #len(train.index)
 
 			cv_list = cv_to_fold(cv,len(train.index))
 
-			print "Training L1 %s,%s,%s" % (k,n,adds[ind])
+			print("Training L1 %s,%s,%s" % (k,n,adds[ind]))
 
 			move_models(k)
 			preds_own = train_l1_func(train,names=[k,k,k,k,k,k,k],adds=[n,n,n,n,n,n,n,n],cv=cv)
 
-			print "Applying L1 %s,%s,%s" % (k,n,adds[ind])
+			print("Applying L1 %s,%s,%s" % (k,n,adds[ind]))
 
 			preds_l1_train,skipped_train = apply_models(train.drop(["time","IDENTIFIER","system"],axis=1),known_rt=train["time"],row_identifiers=train["IDENTIFIER"],skip_cont=[k])
 			preds_l1_test,skipped_test = apply_models(test.drop(["time","IDENTIFIER","system"],axis=1),known_rt=test["time"],row_identifiers=test["IDENTIFIER"])			
 		
 			preds_l1_train = pd.concat([preds_l1_train.reset_index(drop=True), preds_own], axis=1)
 
-			print "Applying L2 %s,%s,%s" % (k,n,adds[ind])
+			print("Applying L2 %s,%s,%s" % (k,n,adds[ind]))
 
 			preds_l2_test,preds_l2_train = apply_l2(preds_l1_train,preds_l1_test,cv_list=cv_list,name=k)
 
@@ -260,7 +260,7 @@ def main(infilen="train/retmetfeatures_new.csv"):
 			#print preds_l2_test
 			#raw_input()
 
-			print "Applying L3 %s,%s,%s" % (k,n,adds[ind])
+			print("Applying L3 %s,%s,%s" % (k,n,adds[ind]))
 
 			preds_l3_train,preds_l3_test,coefs_list = train_l3(preds_l2_train,preds_l2_test,cv=cv)
 
