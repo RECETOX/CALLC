@@ -1,3 +1,5 @@
+cmd="${1:-jupyter notebook --port 8080 --ip 0.0.0.0}"
+
 docker run \
 -e HOME=/data \
 -e PYTHONPATH=/opt/callc/rt \
@@ -6,5 +8,5 @@ docker run \
 -p 8080:8080 \
 -ti \
 recetox/callc \
-bash -c '. /opt/conda/etc/profile.d/conda.sh && conda activate callc && jupyter notebook --port 8080 --ip 0.0.0.0'
+bash -c ". /opt/conda/etc/profile.d/conda.sh && conda activate callc && $cmd"
 
