@@ -60,7 +60,11 @@ def main(infilen,featfilen,sys):
 				test2 = test.drop(["time","IDENTIFIER"],axis=1)
 				if mn == "SVM":
 					test2 = maxabs_scale(test2)
-				preds = model.predict(test2)
+				try:
+					preds = model.predict(test2)
+				except ValueError as e:
+					print("Oops: ",e)
+					continue
 
 				result.insert(len(result.columns),mn,preds)
 
@@ -69,9 +73,14 @@ def main(infilen,featfilen,sys):
 			print(corres)
 
 			for mn in models:
-				if best['corr'][mn] < corres[mn]:
-					best['corr'][mn] = corres[mn]
-					best['run'][mn] = k
+				try:
+					if best['corr'][mn] < corres[mn]:
+						best['corr'][mn] = corres[mn]
+						best['run'][mn] = k
+				except (TypeError,KeyError) as e:
+					print(f"Oops ({mn}): ",e)
+					continue
+
 
 	print('Final results')
 	print(best)

@@ -19,6 +19,7 @@ RUN bash -c '. /opt/conda/etc/profile.d/conda.sh && conda activate callc && pip 
 
 COPY install /opt/callc/install/
 COPY rt /opt/callc/rt/
+RUN mkdir /opt/callc/rt/test_preds
 RUN chmod -R a+w /opt/callc/rt
 
 
