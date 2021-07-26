@@ -80,13 +80,17 @@ def apply_models(X,outfile="",model_path="mods_l1/",known_rt=[],row_identifiers=
             except: print("Unable to load: %s" % (model_f))
         if "_SVM" in f:
             X_temp = maxabs_scale(X)
-            preds.append(model.predict(X_temp))
+            try:
+                preds.append(model.predict(X_temp))
+            except Exception as e:
+                print("Could not execute: %s" % (join(model_path, f)), e)
+                continue;
             cnames.append(f.replace(".pickle",""))
             continue
         try: 
             temp_preds = model.predict(X)
-        except:
-            print("Could not execute: %s" % (join(model_path, f)))
+        except Exception as e:
+            print("Could not execute: %s" % (join(model_path, f)), e)
             continue
         preds.append(temp_preds)
         cnames.append(f.replace(".pickle",""))

@@ -206,8 +206,8 @@ def main(infilen="train/retmetfeatures_new.csv"):
 		if k != "Mark": continue
 		#print k
 		for ind in range(len(n_all)):
-			selected_set = sets[k]
-			select_index = range(len(selected_set.index))
+			selected_set = sets[k].dropna()
+			select_index = list(range(len(selected_set.index)))
 			#if len(select_index) < 101: continue
 
 			n = n_all[ind]
@@ -220,21 +220,29 @@ def main(infilen="train/retmetfeatures_new.csv"):
 
 
 			shuffle(select_index)
-			train = selected_set.iloc[select_index[0:n],] #
-			test = selected_set.iloc[select_index[n:],] #
+			train = selected_set.iloc[select_index[0:n],].dropna() #
+			test = selected_set.iloc[select_index[n:],].dropna() #
 			
 			if len(select_index[n:]) < 10: continue
 
 			cv = KFold(n_splits=10,shuffle=True)
-			cv = cv.split(train.index)
+			cv = list(cv.split(train.index))
+			print("Shit1: ",list(cv))
 	 #len(train.index)
 
 			cv_list = cv_to_fold(cv,len(train.index))
+			print("Shit2: ",list(cv))
 
 			print("Training L1 %s,%s,%s" % (k,n,adds[ind]))
 
 			move_models(k)
-			preds_own = train_l1_func(train,names=[k,k,k,k,k,k,k],adds=[n,n,n,n,n,n,n,n],cv=cv)
+			try:
+				preds_own = train_l1_func(train,names=[k,k,k,k,k,k,k],adds=[n,n,n,n,n,n,n,n],cv=cv)
+			except ValueError as e:
+				print("Ooops: ",e)
+				remove_models(k,n)
+				move_models_back(k)
+				continue
 
 			print("Applying L1 %s,%s,%s" % (k,n,adds[ind]))
 

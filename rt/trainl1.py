@@ -71,6 +71,10 @@ def train_model_l1(X,y,params,model,scale=False,n_jobs=8,cv = None,n_params=20):
 	list
 		predictions for the train set based on the CV
     """
+
+    X.to_csv('/tmp/X.csv')
+    y.to_csv('/tmp/y.csv')
+
     if scale: X = maxabs_scale(X)
     else: X = X.apply(lambda x: pd.to_numeric(x, errors="coerce"))
     njobs=1
@@ -78,13 +82,22 @@ def train_model_l1(X,y,params,model,scale=False,n_jobs=8,cv = None,n_params=20):
     ret_mod = clone(model)
 
     grid = RandomizedSearchCV(model, params, cv=cv,scoring="neg_mean_absolute_error",verbose=0,n_jobs=n_jobs,n_iter=n_params,refit=False)
-    grid.fit(X,y)
-    cv_pred = cv
-    crossv_mod.set_params(**grid.best_params_)
-    preds = cross_val_predict(crossv_mod, X=X, y=y, cv=cv_pred, n_jobs=n_jobs, verbose=0)
+#    grid = RandomizedSearchCV(model, params, cv=cv,scoring="neg_mean_absolute_error",verbose=0,n_jobs=1,n_iter=n_params,refit=False)
 
-    ret_mod.set_params(**grid.best_params_)
-    ret_mod.fit(X,y)
+    preds = y
+    try:
+        grid.fit(X,y)
+
+        cv_pred = cv
+        crossv_mod.set_params(**grid.best_params_)
+        preds = cross_val_predict(crossv_mod, X=X, y=y, cv=cv_pred, n_jobs=n_jobs, verbose=0)
+    
+        ret_mod.set_params(**grid.best_params_)
+        ret_mod.fit(X,y)
+    
+    except ValueError as v:
+        print("Shit! ",v)
+        raise(v)
 
     return(ret_mod,preds)
 

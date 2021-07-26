@@ -142,7 +142,13 @@ def train_l3(knowns,unknowns,cv=None):
         list with coefficients trained in Layer 3
     """
     cols_known = list(knowns.columns)
+    cols_unknown = list(unknowns.columns)
+
+# too aggressive, experiments only
+#    knowns=knowns.drop(list(set(cols_known)-set(cols_unknown)),axis=1)
+#    unknowns=unknowns.drop(list(set(cols_unknown)-set(cols_known)),axis=1)
     
+# should be covered more aggressively above
     try: 
         unknowns = unknowns[cols_known]
     except: 
