@@ -23,17 +23,17 @@ RUN mkdir /opt/callc/rt/test_preds
 RUN chmod -R a+w /opt/callc/rt
 
 
-COPY ljocha.scss patch-reveal-themes.sh /work/
-# COPY *.ipynb pbc3.xtc 1L2Y.pdb /work/
+RUN mkdir /data
+COPY ljocha.scss patch-reveal-themes.sh /data/
 
-WORKDIR /work
+WORKDIR /data
 ARG prefix=/opt/conda/envs/callc
 RUN sassc -I ${prefix}/share/jupyter/nbextensions/rise/reveal.js/css/theme/source ljocha.scss ljocha.css && ./patch-reveal-themes.sh ljocha.css && cp ljocha.css ${prefix}/share/jupyter/nbextensions/rise/reveal.js/css/theme
 
 ENV PYTHONPATH=/opt/callc/rt
-COPY sitola_9-21/* /work/
-ENV PATH="${PATH}:/work"
+COPY sitola_9-21/* /data/
+ENV PATH="${PATH}:/data"
 
 ENV HOME /home/jovyan
 RUN mkdir /home/jovyan
-RUN chown -R 1000:1000 /work /home/jovyan
+RUN chown -R 1000:1000 /data /home/jovyan
