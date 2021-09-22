@@ -32,3 +32,7 @@ RUN sassc -I ${prefix}/share/jupyter/nbextensions/rise/reveal.js/css/theme/sourc
 
 COPY sitola_9-21/* /work/
 ENV PATH="${PATH}:/work"
+
+ENV HOME /home/jovyan
+RUN mkdir /home/jovyan
+RUN chown -R 1000:1000 /work /home/jovyan
