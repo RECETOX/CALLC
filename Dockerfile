@@ -30,6 +30,7 @@ WORKDIR /work
 ARG prefix=/opt/conda/envs/callc
 RUN sassc -I ${prefix}/share/jupyter/nbextensions/rise/reveal.js/css/theme/source ljocha.scss ljocha.css && ./patch-reveal-themes.sh ljocha.css && cp ljocha.css ${prefix}/share/jupyter/nbextensions/rise/reveal.js/css/theme
 
+ENV PYTHONPATH=/opt/callc/rt
 COPY sitola_9-21/* /work/
 ENV PATH="${PATH}:/work"
 
